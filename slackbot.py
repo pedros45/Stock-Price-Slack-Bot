@@ -1,46 +1,13 @@
-# Run pip install slack_sdk to get this imported properly
 import datetime
 import slack
 import os
 import yfinance as yf
-from slack_sdk import WebClient
-from slack_sdk.errors import SlackApiError
 from pathlib import Path
 from dotenv import load_dotenv
 from flask import Flask
 from slackeventsapi import SlackEventAdapter
 
-#install ngrok to run bot from local server on pc
-#takes public IP address/domain and routes it to our local server
-#https://ngrok.com/download
-#This will allow us to a server on our local computer
-#Takes public IP address/domain and routes that to our local server
-#
-
-#install micro web service "flask"
-#pip install flask
-#pip install slackeventsapi
-
-#Run engrok, enter command: ngrok http 127.0.0.1:5000
-#Check forwarding line, mine says:
-#http://43d1cd57d0ae.ngrok.io -> http://localhost:5000
-#Takes public IP address, and points to our local host web server address
-#Keep running during development
-
-#Enable events on slack api app
-#Request URL:  when an event occurs,
-#the slack API is going to send a post request to our web server.
-#From here we can get the request and handle it accordingly.
-#Take URL from ngrok and past it into REQUEST URL, append /slack/events
-#Mine looks like:  http://43d1cd57d0ae.ngrok.io/slack/events   #NOTE THIS CHANGES EVERYTIME NGROK IS RESTARTED, UPDATE
-#Python code and ngrok should be running this time for slack API to verify url
-#Slack API website, Subscribe to bot events -> Add Bot User Event ->
-#enter: message.channels
-#when someone sends a message, sends to our URL where we can handle event
-#save changes.
-
-
-tickers_list = ["VOO"]
+#tickers_list = ["VOO"]
 env_path = Path('.') / '.env'
 load_dotenv(dotenv_path=env_path)
 
@@ -53,7 +20,6 @@ client = slack.WebClient(os.environ['TOKEN'])
 
 #if bot is sending message, dont respond. Only respond to users
 BOT_ID = client.api_call("auth.test")['user_id']
-
 
 def get_data(ticker):
     ticker_data = yf.Ticker(ticker)
@@ -96,10 +62,6 @@ def message(payload):  #when message is sent, take and handle payload
         client.chat_postMessage(channel=channel_id, text=get_data(text))
 
 if __name__ == '__main__':
-    #if file ran directly, run web server on default port 5000
     app.run(debug=True)
-    # Run through tickers and output data
-    #for ticker in tickers_list:
-        #send_message(get_data(ticker))
 
 
